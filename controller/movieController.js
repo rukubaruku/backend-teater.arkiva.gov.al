@@ -16,10 +16,10 @@ exports.getAllMovies = async (req, res) => {
 };
 
 exports.createMovie = async (req, res) => {
-  const { title, date, time } = req.body;
+  const { title, date, time, status } = req.body;
 
   try {
-    const newMovie = new Movies({ title, date, time });
+    const newMovie = new Movies({ title, date, time, status });
     const savedMovie = await newMovie.save();
     if (savedMovie) {
       return res.status(200).json({ message: "Filmi u shtua me sukses!" });
@@ -27,5 +27,20 @@ exports.createMovie = async (req, res) => {
   } catch (error) {
     console.error("Error creating post:", error);
     return res.status(500).json({ message: "Server error", error: error });
+  }
+};
+
+exports.getPendingMovies = async (req, res) => {
+  try {
+    const pendingMovies = await Movies.find({ status: "pending" });
+
+    if (!pendingMovies || pendingMovies.length === 0) {
+      return res.status(404).json({ message: "Nuk u gjetën filma në pritje!" });
+    }
+
+    res.status(200).json(pendingMovies);
+  } catch (error) {
+    console.error("Error fetching pending movies:", error);
+    res.status(500).json({ message: "Server error!" });
   }
 };

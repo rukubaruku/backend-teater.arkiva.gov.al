@@ -8,4 +8,6 @@ router.get("/movies", movieController.getAllMovies);
 
 router.post("/movies/new", movieController.createMovie);
 
+router.get("/movies/pending", movieController.getPendingMovies);
+
 module.exports = router;
