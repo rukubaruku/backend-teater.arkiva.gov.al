@@ -13,6 +13,8 @@ const userRoutes = require("./routes/userRoute");
 const movieRoutes = require("./routes/movieRoutes");
 const reservationRoutes = require("./routes/reservationRoutes");
 
+connectDB();
+
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
   methods: ["GET", "POST", "OPTIONS"],
