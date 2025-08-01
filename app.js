@@ -17,7 +17,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
     methods: ["POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   })
@@ -25,7 +25,10 @@ app.use(
 app.options("/submit", cors());
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Origin",
+    process.env.ALLOWED_ORIGIN || "http://localhost:3000"
+  );
   res.header("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.sendStatus(204);
