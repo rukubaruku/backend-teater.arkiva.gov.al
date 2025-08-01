@@ -44,3 +44,34 @@ exports.getPendingMovies = async (req, res) => {
     res.status(500).json({ message: "Server error!" });
   }
 };
+
+exports.updateMovieStatus = async (req, res) => {
+  const movieId = req.params.id;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: "Status mungon!" });
+  }
+
+  try {
+    const updatedMovie = await Movies.findByIdAndUpdate(
+      movieId,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedMovie) {
+      return res.status(404).json({ message: "Filmi nuk u gjet!" });
+    }
+
+    res
+      .status(200)
+      .json({
+        message: "Statusi u përditësua me sukses!",
+        movie: updatedMovie,
+      });
+  } catch (error) {
+    console.error("Gabim gjatë përditësimit të statusit:", error);
+    res.status(500).json({ message: "Gabim në server!" });
+  }
+};

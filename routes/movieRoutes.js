@@ -10,4 +10,6 @@ router.post("/movies/new", movieController.createMovie);
 
 router.get("/movies/pending", movieController.getPendingMovies);
 
+router.patch("/:id", movieController.updateMovieStatus);
+
 module.exports = router;
