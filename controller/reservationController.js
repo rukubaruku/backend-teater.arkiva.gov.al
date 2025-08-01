@@ -17,9 +17,9 @@ exports.getAllReservations = async (req, res) => {
 
 exports.createReservation = async (req, res) => {
   try {
-    const { fullName, nrPeople, movie } = req.body;
+    const { fullName, email, nrPeople, movie } = req.body;
 
-    if (!fullName || !nrPeople || !movie) {
+    if (!fullName || !email || !nrPeople || !movie) {
       return res.status(400).json({
         success: false,
         message: "Ju lutemi plotësoni të gjitha fushat e nevojshme!",
@@ -28,6 +28,7 @@ exports.createReservation = async (req, res) => {
 
     const newReservation = new Reservations({
       fullName,
+      email,
       nrPeople,
       movie,
     });

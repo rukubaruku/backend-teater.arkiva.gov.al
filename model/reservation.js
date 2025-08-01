@@ -6,6 +6,10 @@ const reservationsSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    email: {
+      type: String,
+      required: true,
+    },
     nrPeople: {
       type: String,
       required: true,

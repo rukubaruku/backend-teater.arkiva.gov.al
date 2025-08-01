@@ -1,41 +1,27 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV || "development"}`,
+});
+
 const express = require("express");
-const nodemailer = require("nodemailer");
 const cors = require("cors");
+const nodemailer = require("nodemailer");
 
 const app = express();
-const port = process.env.PORT || 3107;
 const connectDB = require("./config/database");
 
 const userRoutes = require("./routes/userRoute");
 const movieRoutes = require("./routes/movieRoutes");
 const reservationRoutes = require("./routes/reservationRoutes");
 
-require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
-
-const env = process.env.NODE_ENV || "development";
-const envFile = `.env.${env}`;
-
-const dotenv = require("dotenv");
-dotenv.config({ path: envFile });
-
 connectDB();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
     methods: ["POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   })
 );
-app.options("/submit", cors());
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  if (req.method === "OPTIONS") return res.sendStatus(204);
-  next();
-});
 
 app.use(express.json());
 
@@ -82,8 +68,7 @@ app.use("/api", userRoutes);
 app.use("/api", movieRoutes);
 app.use("/api", reservationRoutes);
 
-const PORT = process.env.PORT || 5000;
-
+const PORT = process.env.PORT || 3107;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
