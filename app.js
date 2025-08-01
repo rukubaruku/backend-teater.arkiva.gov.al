@@ -18,10 +18,13 @@ connectDB();
 app.use(
   cors({
     origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
-    methods: ["POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
+
+app.options("*", cors());
 
 app.use(express.json());
 
