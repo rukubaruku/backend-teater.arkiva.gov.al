@@ -15,16 +15,15 @@ const reservationRoutes = require("./routes/reservationRoutes");
 
 connectDB();
 
-app.use(
-  cors({
-    origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 
-app.options("*", cors());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
