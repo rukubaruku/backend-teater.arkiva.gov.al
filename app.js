@@ -13,27 +13,15 @@ const userRoutes = require("./routes/userRoute");
 const movieRoutes = require("./routes/movieRoutes");
 const reservationRoutes = require("./routes/reservationRoutes");
 
-connectDB();
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: false,
+};
 
-app.use(
-  cors({
-    origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
-    methods: ["POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
-app.options("/submit", cors());
-
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    process.env.ALLOWED_ORIGIN || "http://localhost:3000"
-  );
-  res.header("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  if (req.method === "OPTIONS") return res.sendStatus(204);
-  next();
-});
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
