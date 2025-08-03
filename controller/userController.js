@@ -31,22 +31,37 @@ exports.logIn = async (req, res) => {
   }
 };
 
+exports.getUserProfile = async (req, res) => {
+  try {
+    const user = await Users.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Përdoruesi nuk eksziton!" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Ndodhi një gabim gjatë marrjes së të dhënave!:", error);
+    res.status(500).json({
+      message: "Ndodhi një gabim gjatë marrjes së të dhënave!",
+      error,
+    });
+  }
+};
+
 exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
 
     if (!userId) {
-      return res.status(400).json({ message: "Invalid user ID format" });
+      return res.status(400).json({ message: "ID jo e saktë e përdoruesit!" });
     }
 
-    const { firstName, lastName, email, phone, password } = req.body;
+    const { firstName, lastName, email, phone } = req.body;
 
     const updateFields = {
       ...(firstName && { firstName }),
       ...(lastName && { lastName }),
       ...(email && { email }),
       ...(phone && { phone }),
-      ...(password && { password }),
     };
 
     const user = await Users.findByIdAndUpdate({ _id: userId }, updateFields, {
@@ -54,14 +69,56 @@ exports.updateUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "Përdoruesi nuk ekziston!" });
     }
 
     return res
       .status(200)
-      .json({ message: "User updated successfully!", user });
+      .json({ message: "Profili u modifikua me sukses!", user });
   } catch (error) {
-    console.error("Error updating user:", error);
-    res.status(500).json({ message: "An error occurred!", error });
+    console.error("Ndodhi një gabim gjatë ruajtjes së të dhënave:", error);
+    res.status(500).json({
+      message: "Ndodhi një gabim gjatë ruajtjes së të dhënave!",
+      error,
+    });
+  }
+};
+
+exports.updateUserPassword = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({ message: "ID jo e saktë e përdoruesit!" });
+    }
+
+    const { currentPassword, newPassword, confirmationPassword } = req.body;
+
+    if (newPassword !== confirmationPassword) {
+      return res.status(401).json({ message: "Fjalëkalimet nuk përputhen!" });
+    }
+
+    // ✅ Correct assignment
+    const updateFields = {
+      ...(newPassword && { password: newPassword }),
+    };
+
+    const user = await Users.findByIdAndUpdate({ _id: userId }, updateFields, {
+      new: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "Fjalëkalimi nuk ekziston!" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Fjalëkalimi u modifikua me sukses!", user });
+  } catch (error) {
+    console.error("Ndodhi një gabim gjatë ruajtjes së të dhënave:", error);
+    res.status(500).json({
+      message: "Ndodhi një gabim gjatë ruajtjes së të dhënave!",
+      error,
+    });
   }
 };

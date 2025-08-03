@@ -64,14 +64,82 @@ exports.updateMovieStatus = async (req, res) => {
       return res.status(404).json({ message: "Filmi nuk u gjet!" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Statusi u përditësua me sukses!",
-        movie: updatedMovie,
-      });
+    res.status(200).json({
+      message: "Statusi u përditësua me sukses!",
+      movie: updatedMovie,
+    });
   } catch (error) {
     console.error("Gabim gjatë përditësimit të statusit:", error);
     res.status(500).json({ message: "Gabim në server!" });
+  }
+};
+
+exports.getMoviesDashboard = async (req, res) => {
+  try {
+    const count = await Movies.countDocuments();
+
+    res.status(200).json({
+      count,
+    });
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.getOneMovie = async (req, res) => {
+  try {
+    const movie = await Movies.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ message: "Filmi nuk eksziton!" });
+    }
+    res.status(200).json(movie);
+  } catch (error) {
+    console.error("Ndodhi një gabim gjatë marrjes së të dhënave!:", error);
+    res.status(500).json({
+      message: "Ndodhi një gabim gjatë marrjes së të dhënave!",
+      error,
+    });
+  }
+};
+
+exports.updateMovie = async (req, res) => {
+  try {
+    const movieId = req.params.id;
+
+    if (!movieId) {
+      return res.status(400).json({ message: "ID jo e saktë e filmit!" });
+    }
+
+    const { title, date, time, status } = req.body;
+
+    const updateFields = {
+      ...(title && { title }),
+      ...(date && { date }),
+      ...(time && { time }),
+      ...(status && { status }),
+    };
+
+    const movie = await Movies.findByIdAndUpdate(
+      { _id: movieId },
+      updateFields,
+      {
+        new: true,
+      }
+    );
+
+    if (!movie) {
+      return res.status(404).json({ message: "Filmi nuk ekziston!" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Filmi u modifikua me sukses!", movie });
+  } catch (error) {
+    console.error("Ndodhi një gabim gjatë ruajtjes së të dhënave:", error);
+    res.status(500).json({
+      message: "Ndodhi një gabim gjatë ruajtjes së të dhënave!",
+      error,
+    });
   }
 };

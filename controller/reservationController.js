@@ -79,3 +79,48 @@ exports.getReservationsByMovieIds = async (req, res) => {
     });
   }
 };
+
+exports.getReservationsDashboard = async (req, res) => {
+  try {
+    const count = await Reservations.countDocuments();
+
+    res.status(200).json({
+      count,
+    });
+  } catch (error) {
+    console.error("Error fetching reservations:", error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.getReservationsCountByMovie = async (req, res) => {
+  try {
+    const reservations = await Reservations.aggregate([
+      {
+        $group: {
+          _id: "$movie",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          movie: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+
+    if (!reservations || reservations.length === 0) {
+      return res.status(404).json({
+        message: "Nuk u gjetën rezervime për asnjë film!",
+        data: [],
+      });
+    }
+
+    res.status(200).json({ data: reservations });
+  } catch (error) {
+    console.error("Gabim gjatë marrjes së rezervimeve për çdo film:", error);
+    res.status(500).json({ message: "Server error!" });
+  }
+};
