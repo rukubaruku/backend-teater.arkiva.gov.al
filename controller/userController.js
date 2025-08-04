@@ -11,23 +11,29 @@ exports.getAllUsers = async (req, res) => {
 
 exports.logIn = async (req, res) => {
   const { email, password } = req.body;
-
+  if (!email) {
+    return res
+      .status(401)
+      .send({ message: "Email nuk mund të jetë bosh", type: "error" });
+  }
+  if (!password) {
+    return res
+      .status(401)
+      .send({ message: "Fjalëkalimi nuk mund të jetë bosh", type: "error" });
+  }
   try {
-    console.log("Connecting to MongoDB...");
     const user = await Users.findOne({ email, password });
 
     if (!user) {
       return res
         .status(404)
-        .send({ message: "User not found!", type: "error" });
+        .send({ message: "Përdoruesi nuk ekziston!", type: "error" });
     }
 
     return res.status(200).send(user);
   } catch (error) {
     console.error("Error in logIn:", error.message, error.stack);
-    return res
-      .status(500)
-      .send({ message: "Internal server error", type: "error" });
+    return res.status(500).send({ message: "Server error", type: "error" });
   }
 };
 
