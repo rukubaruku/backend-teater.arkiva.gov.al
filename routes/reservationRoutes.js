@@ -28,4 +28,9 @@ router.get(
   reservationsController.getReservationsCountByMovie
 );
 
+router.delete(
+  "/reservations/delete/:id",
+  reservationsController.deleteReservation
+);
+
 module.exports = router;

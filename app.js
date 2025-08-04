@@ -17,7 +17,7 @@ connectDB();
 
 const corsOptions = {
   origin: ["https://teater.arkiva.gov.al", "http://localhost:3000"],
-  methods: ["GET", "POST", "OPTIONS", "PUT"],
+  methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };

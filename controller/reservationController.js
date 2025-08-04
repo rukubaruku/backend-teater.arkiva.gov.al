@@ -124,3 +124,22 @@ exports.getReservationsCountByMovie = async (req, res) => {
     res.status(500).json({ message: "Server error!" });
   }
 };
+
+exports.deleteReservation = async (req, res) => {
+  try {
+    const reservationId = req.params.id;
+    const reservation = await Reservations.findByIdAndDelete(reservationId);
+
+    if (!reservation) {
+      return res
+        .status(404)
+        .send({ error: "Rezervimi nuk ekziston", type: error });
+    }
+    return res
+      .status(200)
+      .send({ message: "Rezervimi u fshi me sukses", reservation });
+  } catch (error) {
+    console.error("Ndodhi një gabim gjatë fshirjes:", error);
+    return res.status(500).send({ error: error.message });
+  }
+};

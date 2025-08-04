@@ -143,3 +143,18 @@ exports.updateMovie = async (req, res) => {
     });
   }
 };
+
+exports.deleteMovie = async (req, res) => {
+  try {
+    const movieId = req.params.id;
+    const movie = await Movies.findByIdAndDelete(movieId);
+
+    if (!movie) {
+      return res.status(404).send({ error: "Filmi nuk ekziston", type: error });
+    }
+    return res.status(200).send({ message: "Filmi u fshi me sukses", movieId });
+  } catch (error) {
+    console.error("Ndodhi një gabim gjatë fshirjes:", error);
+    return res.status(500).send({ error: error.message });
+  }
+};

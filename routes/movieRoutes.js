@@ -18,4 +18,6 @@ router.get("/movies/:id", movieController.getOneMovie);
 
 router.put("/movies/update/:id", movieController.updateMovie);
 
+router.delete("/movies/delete/:id", movieController.deleteMovie);
+
 module.exports = router;
